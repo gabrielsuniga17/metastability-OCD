@@ -1,4 +1,6 @@
-# Metastability and OCD project
+# Introdução
+*em construção*
+# Metastability and OCD project/descrição do projeto
   * Preprocessing:
     - made with CONN toolbox;
     - Data provided by [Healthy Brain Network database](https://fcon_1000.projects.nitrc.org/indi/cmi_healthy_brain_network/) and National Institute of Developmental Psychiatry for Children and Adolescents (INDP);
