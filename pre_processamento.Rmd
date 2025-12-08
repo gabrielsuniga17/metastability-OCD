@@ -1,0 +1,82 @@
+---
+title: "Pre-processamento via CONN toolbox"
+author: "Gabriel W. R. Suniga"
+output: pdf_document
+header-includes:
+  - \usepackage{indentfirst} # indenta o primeiro paragrafo abaixo dos topicos
+  - \setlength{\parindent}{2em} # indenta todos os outros paragrafos
+---
+
+## Introdução
+
+  O pré-processamento dos dados de ressonância magnética é uma etapa fundamental na análise dos dados. Essa etapa consiste na remoção de artefatos confundidores. De fato, muitos fatores influenciam a aquisição da imagem no scanner de ressonância magnética, entre os quais pode-se citar: movimento do indivíduo durante dentro do scaneer; distorções espaciais e temporais relacionadas as especificidades da coleta; efeitos fisiológicos não desejáveis, como respiração e batimentos caríacos, por exemplo. Dessa forma, o pre-processamento os dados nada mais é que uma sequência de etapas que objetiva corrigir esses fatores, e devem ser feitas sempre sobre os dados brutos (anatômicos e funcionais) antes das análises de conectiviadde funcional(NIETO-CASTANON, 2020). Análises de dados de fMRI feitas sem um prévio pre-processamento tendem a conter ruídos, o que limita tanto seu poder estatístico quanto sua replicabilidade.
+
+
+## CONN toolbox
+
+  CONN toolbox é um sofware de análise de conectividade funcional de dados de ressonância magnética funcional, com base na linguagem de programação [Matlab](https://www.mathworks.com/products/matlab.html). 
+
+  O pre-processamento no CONN consiste basicamente de duas partes: pre-processamento padrão (*default preprocessing pipeline*) e uma etapa posterior, chamada *denoising*. A primeira parte aborda etapas como: desempacotamento e realinhamento da imagem (*functional realignment and unwarp*), correção temporal das fatias (*Slice-timing correction, STC*), identificação de outliers; segmentação e normalização e; suavização funcional (*functional smoothing*) (NIETO-CASTANON, 2020). Paara uma descrição detalhada de cada uma dessas etapas, veja Nieto-Castanon (2020) e Jahn (2023). A *Figure 1: Pipeline padrão CONN* ilustra a sequência dessas etapas, e em qual tipo de imagem (anatômica ou funcional) elas são aplicadas.
+
+![Pipeline padrão CONN](C:/Users/Note/Downloads/Schematic-illustration-of-default-minimal-preprocessing-pipeline-in-CONN.png)
+
+  Mesmo após essas etapas de pre-processamento, os dados de ressonância ainda podem conter uma quantidade indesejada de ruído, o que é particularmente prejudicial no contexto da ressonância magnética funcional, já que introduz viéses nas medidas de conectividade funcional. A etapa de *denoising* consiste em um conjunto de processos que objetiva reduzir esses ruídos remanescentes. Para uma descrição desses processos, veja Nieto-Castanon (2020) e Nieto-Castanon et Whitfield Gabrieli (2022).
+
+  A próxima seção detalha como foi feito o pre-processamento para ambos os datasets (para mais informações sobre os datasets, veja o arquivo *descritivos_datasets.pdf*), e os resultados obtidos.
+
+
+## Resultados
+
+  Os dados funcionais e anatômicos de cada indivíduo foram pre-processados através de uma pipeline flexível (NIETO-CASTANON, 2020, cap. 1), que incluia etapas como: realinhamento com correção de *interações de distorção de suscetibilidade*, correção temporal de fatias, detecção de outliers, segmentação, normalização no espaço MNI e suavização.
+
+  Os dados funcionais foram realinhados através do procedimento de realinhamento e desempacotamento do software SPM (ANDERSSON, HUTTON, ASHBURNER et al., 2001), onde todas as imagens foram corregistradas em uma imagem de referência (a primeira imagem da primeira sessão), utilizando uma abordagem de mínimos quadrados com uma transformação de corpo rígido (FRISTON, ASHBURNER, FRITH et al., 1995). Após, as imagens foram reamostradas através de uma interpolação b-spline, de forma a corrigir interações de movimento e suscetibilidade magnética. 
+  
+  Com uma aquisição intercalada das imagens, fatias com desalinhamento temporal foram corrigidas pelo procedimento de correção temporal de fatias do SPM (HENSON, BUECHEL, JOSEPHS et al., 1999; SLADKY, FRISTON, TROSTL et al., 2011), utilizando uma interpolação temporal sincronizada. Dessa forma, cada fatia da imagem foi reamostrada para um tempo médio comum de aquisição. Potenciais outliers foram identificados utilizando a ferramenta ART (*Artifact Detection Tools*) (WHITFIELD-GABRIELI, NIETO-CASTANON, GHOSH, 2011), como aquisições com deslocamento quadro a quadro acima de 0.5 mm ou mudanças no sinal BOLD global maiores que 3 desvios padrão (POWER, MITRA, LAUMANN, 2014; NIETO-CASTANON, 2022). Uma imagem BOLD de referência foi computada para cada sujeito calculando-se a média de todos os escaneamentos, excluindo outliers. 
+  
+  Os dados funcionais e anatômicos foram normalizados no espação MNI padrão, segmentados em classes de tecidos (substância cinza, substância branca e líquido encefaloraquidiano) e reamostrados em voxels isotropicos de 2 mm através de um procedimento de normalização direta (CALHOUN, WAGER, KRISHNAN et al., 2017; NIETO-CASTANON, 2020), utilizando o algoritmo unificado de segmentação e normalização do SPM (ASHBURNER et FRISTON, 2005; ASHBURNER, 2007), com o modelo de mapa de probabilidade de tecido IXI-549. Por fim, os dados funcionais foram suavizados utilizando uma convolução espacial com um núcleo gaussiano de 8 mm FWHM (*full width half maximum*).
+
+  Os resultados de garantia de qualidade (*quality assurance*, QA) do pre-processamento e a pipeline utilizada podem ser vistos [**neste link**](https://drive.google.com/drive/folders/1TBtQDv5Dvt42eatr7rZwCEH6cIzRfbJF?usp=drive_link). Os dados brutos de ressonância (*MRI raw data*) também estão disponíveis para análise [**aqui**](https://drive.google.com/drive/folders/1wshnfDdD6XOwFdaJOdqvziXvAVN4lN1W?usp=drive_link).
+
+
+
+## Referências
+
+- Andersson, J. L., Hutton, C., Ashburner, J., Turner, R., & Friston, K. J. (2001). Modeling geometric
+deformations in EPI time series. Neuroimage, 13(5), 903-919.
+
+- Ashburner, J., & Friston, K. J. (2005). Unified segmentation. Neuroimage, 26(3), 839-851.
+
+- Ashburner, J. (2007). A fast diffeomorphic image registration algorithm. Neuroimage, 38(1), 95-113.
+
+- Calhoun, V.D., Wager, T.D., Krishnan, A., Rosch, K.S., Seymour, K.E., Nebel, M.B., Mostofsky, S.H.,
+Nyalakanai, P. and Kiehl, K. (2017). The impact of T1 versus EPI spatial normalization templates for fMRI data
+analyses (Vol. 38, No. 11, pp. 5331-5342).
+
+- Friston, K. J., Ashburner, J., Frith, C. D., Poline, J. B., Heather, J. D., & Frackowiak, R. S. (1995). Spatial
+registration and normalization of images. Human brain mapping, 3(3), 165-189.
+
+- Henson, R. N. A., Buechel, C., Josephs, O., & Friston, K. J. (1999). The slice-timing problem in event-related
+fMRI. NeuroImage, 9, 125.
+
+- Jahn, Andrew. Functional Connectivity and the CONN Toolbox. 2023. Disponível em: https://andysbrainbook.readthedocs.io/en/latest/FunctionalConnectivity/CONN_Overview.html
+
+- Nieto Castanon, Alfonso. Handbook of functional connectivity Magnetic Resonance Imaging methods in CONN. 2020. https://doi.org/10.56441/hilbertpress.2207.6598;
+
+- Nieto-Castanon, A. (2022). Preparing fMRI Data for Statistical Analysis. In M. Filippi (Ed.). fMRI techniques
+and protocols. Springer. doi:10.48550/arXiv.2210.13564
+
+- Nieto Castanon, A.; Whitfield Gabrieli, S. (2022). CONN functional connectivity toolbox: RRID SCR_ 009550, release 22. Hilbert Press. https://doi.org/10.56441/hilbertpress.2246.5840;
+
+- Power, J. D., Mitra, A., Laumann, T. O., Snyder, A. Z., Schlaggar, B. L., & Petersen, S. E. (2014). Methods to
+detect, characterize, and remove motion artifact in resting state fMRI. Neuroimage, 84, 320-341.
+
+- Sladky, R., Friston, K. J., Tröstl, J., Cunnington, R., Moser, E., & Windischberger, C. (2011). Slice-timing
+effects and their correction in functional MRI. Neuroimage, 58(2), 588-594.
+
+- Whitfield-Gabrieli, S., Nieto-Castanon, A., & Ghosh, S. (2011). Artifact detection tools (ART). Cambridge, MA.
+Release Version, 7(19), 11.
+
+
+
+
+
