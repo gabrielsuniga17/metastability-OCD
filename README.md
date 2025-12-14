@@ -1,5 +1,3 @@
-# Introdução
-
 Este é um repositório criado para a descrição e os resultados do projeto de mestrado intitulado "Dinâmica da conectividade funcional global na resistência as obsessões e compulsões em crianças e adolescentes com TOC", do aluno de pós-graduação em Neurociência e Cognição da Universidade Federal do ABC, Gabriel Suniga, sob orientação do Prof. Dr. Claudinei Biazoli.
 
 Os arquivos estão separados da seguinte maneira:
